@@ -2,15 +2,33 @@ import * as g from "./graphics.js";
 import * as mm from "./mmath.js";
 import * as room from "./room.js";
 
+let physical_objects = new Array();
+
+export function update_physical_objects() {
+    for (let i = 0; i < physical_objects.length; i++) {
+	for (let j = i+1; j < physical_objects.length; j++) {
+	    if (physical_objects[i].check_collision(physical_objects[j])) {
+		physical_objects[i].collision(physical_objects[j]);
+		physical_objects[j].collision(physical_objects[i]);
+	    }
+	}
+    }
+    physical_objects.length = 0;
+}
+
 export class Group {
     constructor() {
-	this.branch = Array();
+	this.branch = new Set();
     }
 
     add_object(obj) {
-	this.branch.push(obj);
+	this.branch.add(obj);
     }
 
+    remove_object(obj) {
+	this.branch.delete(obj);
+    }
+    
     draw(gl, view, time) {
 	for (let obj of this.branch) {
 	    obj.draw(gl, view, time);
@@ -34,6 +52,54 @@ export class Orthogonal {
 				mm.multiply_linear_affine(this.transform, view.M),
 				mm.multiply_linear_linear(this.transform, view.N));
 	this.object.draw(gl, new_view, time);
+    }
+}
+
+export class Physical_Sphere {
+    constructor(obj, r) {
+	this.object = obj;
+	this.radius = r;
+    }
+
+    check_collision(obj) {
+	return obj.check_collision_sphere(this);
+    }
+
+    check_collision_sphere(obj) {
+	let d = mm.distance(this.location, obj.location);
+	return d < this.radius + obj.radius
+    }
+
+    collision(obj) {
+	console.log("collision");
+    }
+    
+    draw(gl, view, time) {
+	this.location = new Float32Array(3);
+	this.location[0] = view.M[9];
+	this.location[1] = view.M[10];
+	this.location[2] = view.M[11];
+
+	physical_objects.push(this);
+
+	this.object.draw(gl, view, time);
+    }
+}
+
+export class Physical_Sphere_Remove extends Physical_Sphere {
+    constructor(obj, r, p) {
+	super(obj, r);
+	this.parent = p;
+	this.container = null;
+    }
+
+    set_removable(c) {
+	this.container = c;
+    }
+    
+    collision(obj) {
+	this.parent.remove_object(this.container);
+	console.log("remove");
     }
 }
 
@@ -167,6 +233,8 @@ export class Movable {
     }
     
     draw(gl, view, time) {
+	// _movable is how we want to move
+	// we need to change this if colliding with an unmovable object.
 	this.transform = mm.multiply_affine_affine(this.transform, _movable);
 	let new_view = new View(view.P,
 				view.C,
@@ -315,7 +383,7 @@ export class Tetrahedron {
 	gl.bufferData(gl.ARRAY_BUFFER, this.normals, gl.STATIC_DRAW);
 
     }
-    
+
     draw(gl, view, time) {
 	gl.useProgram(this.program);
 

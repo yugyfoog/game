@@ -47,29 +47,39 @@ export function scene_graph(gl) {
 	new Float32Array([0.53, 0.18, 0.9]))); // sienna
 
     let tetrahedron = new js3d.Tetrahedron(gl, js3d.random_color());
-    let spinner = new js3d.Spinner(tetrahedron);
-    let translate = new js3d.Translate(spinner, new Float32Array([40,2,40]))
-    room.add_object(translate);
+    let tetra_physical = new js3d.Physical_Sphere_Remove(tetrahedron, 1, room);
+    let tetra_spinner = new js3d.Spinner(tetra_physical);
+    let tetra_translate = new js3d.Translate(tetra_spinner, new Float32Array([40,2,40]))
+    room.add_object(tetra_translate);
+    tetra_physical.set_removable(tetra_translate);
 
     let cube = new js3d.Cube(gl, js3d.random_color());
-    spinner = new js3d.Spinner(cube);
-    translate = new js3d.Translate(spinner, new Float32Array([10, 2, 40]));
-    room.add_object(translate);
-
+    let cube_physical = new js3d.Physical_Sphere_Remove(cube, 1, room);
+    let cube_spinner = new js3d.Spinner(cube_physical);
+    let cube_translate = new js3d.Translate(cube_spinner, new Float32Array([10, 2, 40]));
+    room.add_object(cube_translate);
+    cube_physical.set_removable(cube_translate);
+    
     let octahedron = new js3d.Octahedron(gl, js3d.random_color());
-    spinner = new js3d.Spinner(octahedron);
-    translate = new js3d.Translate(spinner, new Float32Array([40, 2, 10]));
-    room.add_object(translate);
-
+    let octa_physical = new js3d.Physical_Sphere_Remove(octahedron, 1, room);
+    let octa_spinner = new js3d.Spinner(octa_physical);
+    let octa_translate = new js3d.Translate(octa_spinner, new Float32Array([40, 2, 10]));
+    room.add_object(octa_translate);
+    octa_physical.set_removable(octa_translate);
+    
     let icosahedron = new js3d.Icosahedron(gl, js3d.random_color());
-    spinner = new js3d.Spinner(icosahedron);
-    translate = new js3d.Translate(spinner, new Float32Array([10, 2, 10]));
-    room.add_object(translate);
+    let icosa_physical = new js3d.Physical_Sphere_Remove(icosahedron, 1, room);
+    let icosa_spinner = new js3d.Spinner(icosa_physical);
+    let icosa_translate = new js3d.Translate(icosa_spinner, new Float32Array([10, 2, 10]));
+    room.add_object(icosa_translate);
+    icosa_physical.set_removable(icosa_translate);
 
     let dodecahedron = new js3d.Dodecahedron(gl, js3d.random_color());
-    spinner = new js3d.Spinner(dodecahedron);
-    translate = new js3d.Translate(spinner, new Float32Array([25, 2, 25]));
-    room.add_object(translate);
+    let dodeca_physical = new js3d.Physical_Sphere_Remove(dodecahedron, 1, room);
+    let dodeca_spinner = new js3d.Spinner(dodeca_physical);
+    let dodeca_translate = new js3d.Translate(dodeca_spinner, new Float32Array([25, 2, 25]));
+    room.add_object(dodeca_translate);
+    dodeca_physical.set_removable(dodeca_translate);
    
     return room;
 }
