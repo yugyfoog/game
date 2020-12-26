@@ -11,41 +11,78 @@ export function scene_graph(gl) {
     room.add_object(new floor.floor(gl));
 
     // north wall
-    room.add_object(new js3d.Quad_Color(
+
+    let north_wall = new js3d.Quad_Color(
 	gl,
 	new Float32Array([0, 0, 0]),
 	new Float32Array([50, 0, 0]),
 	new Float32Array([50, 3, 0]),
 	new Float32Array([0, 3, 0]),
-	new Float32Array([0.98, 0.98, 0.82]))) // light goldenrod yellow
+	new Float32Array([0.98, 0.98, 0.82])) // light goldenrod yellow
 
+    let north_wall_physical = new js3d.Physical_Wall(
+	north_wall,
+	new Float32Array([0,0,0]),   // origin
+	new Float32Array([50, 0, 0]),
+	new Float32Array([0, 3, 0]));
+    
+    room.add_object(north_wall_physical);
+    
     // east wall
-    room.add_object(new js3d.Quad_Color(
+
+    let east_wall = new js3d.Quad_Color(
 	gl,
 	new Float32Array([50, 0, 0]),
 	new Float32Array([50, 0, 50]),
 	new Float32Array([50, 3, 50]),
 	new Float32Array([50, 3, 0]),
-	new Float32Array([1, 0.87, 0.68]))); // navajo white
+	new Float32Array([1, 0.87, 0.68])); // navajo white
+
+    let east_wall_physical = new js3d.Physical_Wall(
+	east_wall,
+	new Float32Array([50, 0, 0]),
+	new Float32Array([0, 0, 50]),
+	new Float32Array([0, 3, 0]));
+
+    room.add_object(east_wall_physical);
 
     // south wall
-    room.add_object(new js3d.Quad_Color(
+
+
+    let south_wall = new js3d.Quad_Color(
 	gl,
 	new Float32Array([50, 0, 50]),
 	new Float32Array([0, 0, 50]),
 	new Float32Array([0, 3, 50]),
 	new Float32Array([50, 3, 50]),
-	new Float32Array([0.87, 0.72, 0.53]))); // burlywood
+	new Float32Array([0.87, 0.72, 0.53])); // burlywood
 
+    let south_wall_physical = new js3d.Physical_Wall(
+	south_wall,
+	new Float32Array([50, 0, 50]),
+	new Float32Array([-50, 0, 0]),
+	new Float32Array([0, 3, 0]));
+
+    room.add_object(south_wall_physical);
+    
     // west wall
-    room.add_object(new js3d.Quad_Color(
+
+    let west_wall = new js3d.Quad_Color(
 	gl,
 	new Float32Array([0, 0, 50]),
 	new Float32Array([0, 0, 0]),
 	new Float32Array([0, 3, 0]),
 	new Float32Array([0, 3, 50]),
-	new Float32Array([0.53, 0.18, 0.9]))); // sienna
+	new Float32Array([0.53, 0.18, 0.9])); // sienna
 
+    let west_wall_physical = new js3d.Physical_Wall(
+	west_wall,
+	new Float32Array([0, 0, 50]),
+	new Float32Array([0, 0, -50]),
+	new Float32Array([0, 3, 0]));
+
+    room.add_object(west_wall_physical);
+    
     let tetrahedron = new js3d.Tetrahedron(gl, js3d.random_color());
     let tetra_physical = new js3d.Physical_Sphere_Remove(tetrahedron, 1, room);
     let tetra_spinner = new js3d.Spinner(tetra_physical);
